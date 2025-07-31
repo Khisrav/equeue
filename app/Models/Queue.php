@@ -12,14 +12,15 @@ class Queue extends Model
     {
         static::creating(function ($queue) {
             $today = now()->toDateString();
-    
+
             // Count tickets today for this doctor
             $count = self::where('doctor_id', $queue->doctor_id)
                 ->whereDate('created_at', $today)
                 ->count();
-    
+
             $next = str_pad($count + 1, 3, '0', STR_PAD_LEFT);
-            $queue->ticket_number = "D{$queue->room_number}-$next";
+            $randomLetter = chr(rand(65, 90)); // Random uppercase letter A-Z
+            $queue->ticket_number = "{$randomLetter}{$queue->room_number}-$next";
         });
     }
 }

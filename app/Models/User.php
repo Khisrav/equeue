@@ -22,6 +22,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'medical_institution_id',
+        'avatar',
+        'specialization',
+        'room_number'
     ];
 
     /**
