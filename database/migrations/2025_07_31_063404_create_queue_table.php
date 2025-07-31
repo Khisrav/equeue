@@ -13,12 +13,15 @@ return new class extends Migration
     {
         Schema::create('queue', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignId('patient_id')->constrained('patients');
+            // $table->foreignId('patient_id')->constrained('patients');
+            $table->string('patient_name')->nullable();
+            $table->string('patient_phone')->nullable();
+            $table->string('patient_gender')->nullable();
             $table->foreignId('medical_institution_id')->constrained('medical_institutions');
             $table->foreignId('doctor_id')->constrained('users');
             $table->enum('status', ['waiting', 'called', 'skipped', 'done', 'canceled'])->default('waiting');
             $table->string('notes')->nullable();
-            $table->string('doctor_notes')->nullable();
+            // $table->string('doctor_notes')->nullable();
             $table->dateTime('start_time')->nullable();
             $table->dateTime('end_time')->nullable();
             $table->timestamps();

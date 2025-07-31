@@ -2,11 +2,37 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+use App\Models\MedicalInstitution;
 
 class Queue extends Model
 {
-    protected $fillable = ['id', 'patient_id', 'medical_institution_id', 'doctor_id', 'status', 'notes', 'doctor_notes', 'start_time', 'end_time'];
+    use HasUuids;
+
+    /**
+     * Indicates if the model's ID is auto-incrementing.
+     */
+    public $incrementing = false;
+
+    /**
+     * The data type of the auto-incrementing ID.
+     */
+    protected $keyType = 'string';
+
+    protected $fillable = [
+        'patient_name',
+        'patient_phone',
+        'patient_gender',
+        'medical_institution_id',
+        'doctor_id',
+        'status',
+        'notes',
+        'start_time',
+        'end_time',
+        'ticket_number',
+    ];
 
     protected static function booted()
     {
@@ -18,9 +44,40 @@ class Queue extends Model
                 ->whereDate('created_at', $today)
                 ->count();
 
+            // Get doctor's room number using relationship
+            $queue->load('doctor');
+            $roomNumber = $queue->doctor ? $queue->doctor->room_number : '000';
+
             $next = str_pad($count + 1, 3, '0', STR_PAD_LEFT);
             $randomLetter = chr(rand(65, 90)); // Random uppercase letter A-Z
-            $queue->ticket_number = "{$randomLetter}{$queue->room_number}-$next";
+            $queue->ticket_number = "{$randomLetter}{$roomNumber}-$next";
         });
+    }
+    
+    public static function getStatuses()
+    {
+        return [
+            'waiting' => 'Ожидание',
+            'called' => 'Вызван',
+            'skipped' => 'Пропущен',
+            'done' => 'Завершен',
+            'canceled' => 'Отменен',
+        ];
+    }
+
+    /**
+     * Get the doctor that owns the queue.
+     */
+    public function doctor()
+    {
+        return $this->belongsTo(User::class, 'doctor_id');
+    }
+
+    /**
+     * Get the medical institution that owns the queue.
+     */
+    public function medicalInstitution()
+    {
+        return $this->belongsTo(MedicalInstitution::class);
     }
 }
