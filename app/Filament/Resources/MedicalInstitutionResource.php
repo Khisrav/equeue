@@ -20,11 +20,12 @@ class MedicalInstitutionResource extends Resource
 {
     protected static ?string $model = MedicalInstitution::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
     protected static ?string $navigationLabel = 'Мед. учреждения';
     protected static ?string $label = 'Мед. учреждениe';
     protected static ?string $pluralLabel = 'Мед. учреждения';
     protected static ?string $modelLabel = 'мед. учреждение';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
