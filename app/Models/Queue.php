@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\QueueUpdated;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
@@ -51,6 +52,28 @@ class Queue extends Model
             $next = str_pad($count + 1, 3, '0', STR_PAD_LEFT);
             $randomLetter = chr(rand(65, 90)); // Random uppercase letter A-Z
             $queue->ticket_number = "{$randomLetter}{$roomNumber}-$next";
+        });
+
+        // Broadcast queue updates when created, updated, or deleted
+        static::created(function ($queue) {
+            $medicalInstitutionId = $queue->doctor->medical_institution_id ?? $queue->medical_institution_id;
+            if ($medicalInstitutionId) {
+                broadcast(new QueueUpdated($medicalInstitutionId));
+            }
+        });
+
+        static::updated(function ($queue) {
+            $medicalInstitutionId = $queue->doctor->medical_institution_id ?? $queue->medical_institution_id;
+            if ($medicalInstitutionId) {
+                broadcast(new QueueUpdated($medicalInstitutionId));
+            }
+        });
+
+        static::deleted(function ($queue) {
+            $medicalInstitutionId = $queue->doctor->medical_institution_id ?? $queue->medical_institution_id;
+            if ($medicalInstitutionId) {
+                broadcast(new QueueUpdated($medicalInstitutionId));
+            }
         });
     }
     

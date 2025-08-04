@@ -55,6 +55,7 @@ class QueueResource extends Resource
                                     ->tel()
                                     ->prefix('+992')
                                     ->placeholder('XX XXX XX XX')
+                                    ->mask('(99) 999-99-99')
                                     ->required()
                                     ->maxLength(255),
                             ]),
@@ -131,16 +132,17 @@ class QueueResource extends Resource
                     ->searchable()
                     ->sortable(),
                 
-                Tables\Columns\IconColumn::make('patient_gender')
+                Tables\Columns\TextColumn::make('patient_gender')
                     ->label('Пол')
-                    ->icon(fn (string $state): string => match ($state) {
-                        'male' => 'heroicon-o-user',
-                        'female' => 'heroicon-o-user',
-                        default => 'heroicon-o-question-mark-circle',
+                    ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'male' => '♂ Мужской',
+                        'female' => '♀ Женский',
+                        default => 'Не указан',
                     })
                     ->color(fn (string $state): string => match ($state) {
-                        'male' => 'info',
-                        'female' => 'pink',
+                        'male' => 'primary',
+                        'female' => 'fuchsia',
                         default => 'gray',
                     }),
                 

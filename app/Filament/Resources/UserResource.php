@@ -144,7 +144,7 @@ class UserResource extends Resource
                 Tables\Columns\ImageColumn::make('avatar')
                     ->label('Фото')
                     ->circular()
-                    ->defaultImageUrl(fn() => 'https://ui-avatars.com/api/?name=User&color=7F9CF5&background=EBF4FF')
+                    ->defaultImageUrl(fn(User $record) => 'https://ui-avatars.com/api/?name=' . $record->name . '&color=7F9CF5&background=EBF4FF')
                     ->size(50),
                 
                 Tables\Columns\TextColumn::make('name')

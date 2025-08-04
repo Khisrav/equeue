@@ -24,3 +24,10 @@ declare module 'vue' {
         $headManager: ReturnType<typeof createHeadManager>;
     }
 }
+
+// Declare Echo global
+declare global {
+    interface Window {
+        Echo: any;
+    }
+}

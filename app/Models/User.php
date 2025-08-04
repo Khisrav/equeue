@@ -52,7 +52,7 @@ class User extends Authenticatable
         ];
     }
     
-    protected function medicalInstitution(): BelongsTo
+    public function medicalInstitution(): BelongsTo
     {
         return $this->belongsTo(MedicalInstitution::class);
     }
